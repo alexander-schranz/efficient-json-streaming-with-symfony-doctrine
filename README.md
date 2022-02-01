@@ -268,7 +268,7 @@ return StreamedResponseFactory::create(
 );
 ```
 
-The JavaScript part something is definitely not read for production
+The JavaScript part something is definitely not ready for production
 and if used you should probably creating your own content-type e.g.:
 `application/json+stream`.  So you are parsing the json this way 
 only when you know it is really in this line by line format.
