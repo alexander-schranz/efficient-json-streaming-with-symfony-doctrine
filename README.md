@@ -56,7 +56,7 @@ class ArticleListAction
 
         return JsonResponse::fromJsonString(json_encode([
             'embedded' => [
-                'articles' => iterator_to_array($articles),
+                'articles' => $articles,
             ],
             'total' => 100_000,
         ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
@@ -83,7 +83,7 @@ In most cases we will add some pagination to the endpoint so our response are no
 But there is also a way how we can stream this response in an efficient way.
 
 First of all we need to adjust how we load the articles. This can be done by replace
-the `getResult` with the more efficient `toIterable`:
+the `getResult` with the more efficient [`toIterable`](https://www.doctrine-project.org/projects/doctrine-orm/en/2.9/reference/batch-processing.html#iterating-results):
 
 ```diff
 -        return $queryBuilder->getQuery()->getResult();
@@ -92,7 +92,7 @@ the `getResult` with the more efficient `toIterable`:
 
 Still the whole JSON need to be in the memory to send it. So we need also refactoring
 how we are creating our response. We will replace our `JsonResponse` with the 
-`StreamResponse` object.
+[`StreamedResponse`](https://symfony.com/doc/6.0/components/http_foundation.html#streaming-a-response) object.
 
 ```php
 return new StreamedResponse(function() use ($articles) {
@@ -276,7 +276,7 @@ There maybe better libraries like [`JSONStream`](https://www.npmjs.com/package/J
 to read data but at current state did test them out.
 
 Atleast what I think everybody should use for providing lists
-is to use `toIterable` when possible for your lists when loading
+is to use [`toIterable`](https://www.doctrine-project.org/projects/doctrine-orm/en/2.9/reference/batch-processing.html#iterating-results) when possible for your lists when loading
 your data via Doctrine and and select specific fields instead
 of using the `ORM` to avoid hydration process to object. 
 
