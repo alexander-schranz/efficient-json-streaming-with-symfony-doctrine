@@ -71,7 +71,7 @@ class ArticleListAction
             ->addSelect('article.title')
             ->addSelect('article.description');
 
-        return $queryBuilder->getQuery()->toIterable();
+        return $queryBuilder->getQuery()->getResult();
     }
 }
 ```
