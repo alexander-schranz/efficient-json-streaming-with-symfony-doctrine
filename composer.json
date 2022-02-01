@@ -1,0 +1,26 @@
+{
+    "name": "alexanderschranz/stream-json-endpoint",
+    "description": "A example to stream json response data.",
+    "require": {
+        "php": "^8.0",
+        "doctrine/orm": "^2.11",
+        "symfony/http-foundation": "^6.0",
+        "doctrine/dbal": "^3.3",
+        "symfony/cache": "^6.0"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "scripts": {
+        "start": ""
+    },
+    "authors": [
+        {
+            "name": "Alexander Schranz",
+            "homepage": "https://github.com/alexander-schranz/"
+        }
+    ]
+}
