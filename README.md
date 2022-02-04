@@ -273,7 +273,8 @@ and if used you should probably creating your own content-type e.g.:
 `application/json+stream`.  So you are parsing the json this way 
 only when you know it is really in this line by line format.
 There maybe better libraries like [`JSONStream`](https://www.npmjs.com/package/JSONStream)
-to read data but at current state did test them out.
+to read data but at current state did test them out. Let me know
+if somebody has experience with that and has solutions for it.
 
 Atleast what I think everybody should use for providing lists
 is to use [`toIterable`](https://www.doctrine-project.org/projects/doctrine-orm/en/2.9/reference/batch-processing.html#iterating-results) when possible for your lists when loading
@@ -284,3 +285,5 @@ Let me know what you think about this experiment and how you currently are
 providing your JSON data.
 
 The whole experiment here can be checked out and test yourself via [this repository](https://github.com/alexander-schranz/efficient-json-streaming-with-symfony-doctrine).
+
+Attend the discussion about this on [Twitter](https://twitter.com/alex_s_/status/1488314080381313025).
