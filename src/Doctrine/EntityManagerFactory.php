@@ -3,14 +3,16 @@
 namespace App\Doctrine;
 
 use App\Entity\Article;
+use Doctrine\Common\Cache\Psr6\DoctrineProvider;
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\Driver\SimplifiedXmlDriver;
+use Doctrine\ORM\ORMSetup;
 use Doctrine\ORM\Tools\ResolveTargetEntityListener;
 use Doctrine\ORM\Tools\SchemaTool;
-use Doctrine\ORM\Tools\Setup;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 class EntityManagerFactory
 {
@@ -32,9 +34,12 @@ class EntityManagerFactory
             'path' => static::$DATABASE_FILE,
         ];
 
-        $config = Setup::createConfiguration(
-            true,
-            __DIR__ . '/../../../../var/cache'
+        $cache = new FilesystemAdapter('doctrine', 0, __DIR__ . '/../../var/cache');
+
+        $config = ORMSetup::createConfiguration(
+            false,
+            __DIR__ . '/../../var/cache',
+            $cache
         );
 
         $namespaces = [
@@ -46,8 +51,7 @@ class EntityManagerFactory
         $config->setMetadataDriverImpl($driver);
 
         $eventManager = new EventManager();
-        $resolveTargetEntityListener = new ResolveTargetEntityListener();
-        $eventManager->addEventListener(Events::loadClassMetadata, $resolveTargetEntityListener);
+        $eventManager->addEventListener(Events::loadClassMetadata, new ResolveTargetEntityListener());
         static::$entityManager = EntityManager::create($connection, $config, $eventManager);
 
         if (!file_exists(static::$DATABASE_FILE)) {

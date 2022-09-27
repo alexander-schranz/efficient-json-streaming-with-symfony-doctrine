@@ -6,7 +6,7 @@
         "doctrine/orm": "^2.11",
         "symfony/http-foundation": "^6.1",
         "doctrine/dbal": "^3.3",
-        "symfony/cache": "^6.0"
+        "symfony/cache": "^6.1"
     },
     "license": "MIT",
     "autoload": {
