@@ -287,3 +287,10 @@ providing your JSON data.
 The whole experiment here can be checked out and test yourself via [this repository](https://github.com/alexander-schranz/efficient-json-streaming-with-symfony-doctrine).
 
 Attend the discussion about this on [Twitter](https://twitter.com/alex_s_/status/1488314080381313025).
+
+## Update 2022-09-27
+
+Added a [StreamedJsonRepsonse](src/Controller/StreamedJsonResponse.php) class and 
+try to contribute this implementation to the Symfony core.
+
+[https://github.com/symfony/symfony/pull/47709](https://github.com/symfony/symfony/pull/47709)

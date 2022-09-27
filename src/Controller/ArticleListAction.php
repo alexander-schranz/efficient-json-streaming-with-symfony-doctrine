@@ -44,6 +44,7 @@ class ArticleListAction
             // send the after part of the json as last
             echo PHP_EOL;
             echo $after;
+
         }, 200, ['Content-Type' => 'application/json']);
     }
 

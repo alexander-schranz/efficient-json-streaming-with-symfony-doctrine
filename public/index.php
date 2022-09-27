@@ -4,6 +4,7 @@ require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 use App\Controller\ArticleListAction;
 use App\Controller\ArticleListOldAction;
+use App\Controller\ArticleListSymfonyAction;
 use App\Doctrine\EntityManagerFactory;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -55,9 +56,26 @@ EOT);
         $response = $action($entityManager);
         $response->send();
 
+        $memoryUsage = memory_get_usage(true);
+        $memoryPeakUsage = memory_get_peak_usage(true);
+
         file_put_contents(
             __DIR__ . '/../var/memory-usage.txt',
-            bytes(memory_get_usage(true)) . PHP_EOL . bytes(memory_get_peak_usage(true))
+            bytes($memoryUsage) . PHP_EOL . bytes($memoryPeakUsage)
+        );
+        break;
+    case '/symfony-articles.json':
+        $entityManager = EntityManagerFactory::getEntityManagerFactory();
+        $action = new ArticleListSymfonyAction();
+        $response = $action($entityManager);
+        $response->send();
+
+        $memoryUsage = memory_get_usage(true);
+        $memoryPeakUsage = memory_get_peak_usage(true);
+
+        file_put_contents(
+            __DIR__ . '/../var/memory-usage-symfony.txt',
+            bytes($memoryUsage) . PHP_EOL . bytes($memoryPeakUsage)
         );
 
         break;
@@ -67,9 +85,12 @@ EOT);
         $response = $action($entityManager);
         $response->send();
 
+        $memoryUsage = memory_get_usage(true);
+        $memoryPeakUsage = memory_get_peak_usage(true);
+
         file_put_contents(
-            __DIR__ . '/../var/old-memory-usage.txt',
-            bytes(memory_get_usage(true)) . PHP_EOL . bytes(memory_get_peak_usage(true))
+            __DIR__ . '/../var/memory-usage-old.txt',
+            bytes($memoryUsage) . PHP_EOL . bytes($memoryPeakUsage)
         );
 
         break;
