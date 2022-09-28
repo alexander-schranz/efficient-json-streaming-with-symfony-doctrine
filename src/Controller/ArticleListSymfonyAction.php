@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Article;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ArticleListSymfonyAction
 {
@@ -20,7 +19,7 @@ class ArticleListSymfonyAction
             'total' => 100_000,
         ], [
             '__REPLACES_ARTICLES__' => $articles,
-        ], flushSize: 100);
+        ]);
     }
 
     private function findArticles(EntityManagerInterface  $entityManager): iterable
