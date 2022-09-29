@@ -59,14 +59,14 @@ class StreamedJsonResponse extends StreamedResponse
 
     private function stream(): void
     {
-        $count = 0;
         $generators = [];
         $structure = $this->data;
 
-        \array_walk_recursive($structure, function (&$item, $key)  use (&$count, &$generators)
+        \array_walk_recursive($structure, function (&$item, $key)  use (&$generators)
         {
             if ($item instanceof \Generator) {
-                $placeholder = '__placeholder_' . $count++ . '__';
+                // using uniqid to avoid conflict with eventually other data in the structure
+                $placeholder = \uniqid('__placeholder_', true);
                 $generators[$placeholder] = $item;
 
                 $item = $placeholder;
