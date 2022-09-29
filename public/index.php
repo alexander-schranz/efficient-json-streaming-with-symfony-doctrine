@@ -4,6 +4,7 @@ require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 use App\Controller\ArticleListAction;
 use App\Controller\ArticleListOldAction;
+use App\Controller\ArticleListOldIterableAction;
 use App\Controller\ArticleListSymfonyAction;
 use App\Doctrine\EntityManagerFactory;
 use Symfony\Component\HttpFoundation\Response;
@@ -90,6 +91,21 @@ EOT);
 
         file_put_contents(
             __DIR__ . '/../var/memory-usage-old.txt',
+            bytes($memoryUsage) . PHP_EOL . bytes($memoryPeakUsage)
+        );
+
+        break;
+    case '/old-iterable-articles.json':
+        $entityManager = EntityManagerFactory::getEntityManagerFactory();
+        $action = new ArticleListOldIterableAction();
+        $response = $action($entityManager);
+        $response->send();
+
+        $memoryUsage = memory_get_usage(true);
+        $memoryPeakUsage = memory_get_peak_usage(true);
+
+        file_put_contents(
+            __DIR__ . '/../var/memory-usage-old-iterable.txt',
             bytes($memoryUsage) . PHP_EOL . bytes($memoryPeakUsage)
         );
 

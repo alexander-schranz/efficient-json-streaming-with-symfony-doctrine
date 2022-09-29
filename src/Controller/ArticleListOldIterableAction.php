@@ -4,21 +4,25 @@ namespace App\Controller;
 
 use App\Entity\Article;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class ArticleListSymfonyAction
+class ArticleListOldIterableAction
 {
     public function __invoke(EntityManagerInterface  $entityManager): Response
     {
-        return new StreamedJsonResponse([
+        $articles = \iterator_to_array($this->findArticles($entityManager));
+
+        return JsonResponse::fromJsonString(json_encode([
             'embedded' => [
-                'articles' => $this->findArticles($entityManager),
+                'articles' => $articles,
+                'total' => 100_000,
             ],
-            'total' => 100_000,
-        ]);
+        ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
     }
 
-    private function findArticles(EntityManagerInterface  $entityManager): \Generator
+    private function findArticles(EntityManagerInterface  $entityManager): iterable
     {
         $queryBuilder = $entityManager->createQueryBuilder();
         $queryBuilder->from(Article::class, 'article');
