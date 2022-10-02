@@ -222,20 +222,38 @@ class ArticleListAction
 }
 ```
 
-The metrics for 100000 Articles:
+The metrics for 100000 Articles (nginx + php-fpm 7.4 - Macbook Pro 2013):
 
-|                    | Old Implementation | New Implementation |
-|--------------------|--------------------|--------------------|
-| Memory Usage       | 49.53 MB           | 2.10 MB            |
-| Memory Usage Peak  | 59.21 MB           | 2.10 MB            |
-| Time to first Byte | 478ms              | 28ms               |
- | Time               | 2.335 s            | 0.584 s            |
+|                           | Old Implementation | New Implementation |
+|---------------------------|--------------------|--------------------|
+| Memory Usage              | 49.53 MB           | 2.10 MB            |
+| Memory Usage Peak         | 59.21 MB           | 2.10 MB            |
+| Time to first Byte        | 478ms              | 28ms               |
+| Time                      | 2.335 s            | 0.584 s            |
 
 This way we did not only reduce the memory usage on our server
 also we did make the response faster. The memory usage was
 measured here with `memory_get_usage` and `memory_get_peak_usage`.
 The "Time to first Byte" by the browser value and response times
 over curl.
+
+**Updated 2022-10-02 - (symfony serve + php-fpm 8.1 - Macbook Pro 2021)**
+
+|                           | Old Implementation | New Implementation |
+|---------------------------|--------------------|--------------------|
+| Memory Usage              | 64.21 MB           | 2.10 MB            |
+| Memory Usage Peak         | 73.89 MB           | 2.10 MB            |
+| Time to first Byte        | 0.203 s            | 0.049 s            |
+| Updated Time (2022-10-02) | 0.233 s            | 0.232 s            |
+
+While there is not much different for a single response in the time, 
+the real performance is the lower memory usage. Which will kick in when
+you have a lot of simultaneously requests. On my machine >150 simultaneously
+requests - which is a high value but will on a normal server be a lot lower.
+
+While 150 simultaneously requests crashes in the old implementation
+the new implementation still works with 220 simultaneously requests. Which
+means we got about ~46% more requests possible.
 
 ## Reading Data in javascript
 
@@ -290,7 +308,11 @@ Attend the discussion about this on [Twitter](https://twitter.com/alex_s_/status
 
 ## Update 2022-09-27
 
-Added a [StreamedJsonRepsonse](src/Controller/StreamedJsonResponse.php) class and 
+Added a [StreamedJsonRepsonse](src/Controller/StreamedJsonResponse.php) class and
 try to contribute this implementation to the Symfony core.
 
 [https://github.com/symfony/symfony/pull/47709](https://github.com/symfony/symfony/pull/47709)
+
+## Update 2022-10-02
+
+Updated some statistics with new machine and apache benchmark tests for concurrency requests.
