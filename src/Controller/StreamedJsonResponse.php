@@ -62,49 +62,62 @@ class StreamedJsonResponse extends StreamedResponse
         $generators = [];
         $structure = $this->data;
 
-        \array_walk_recursive($structure, function (&$item, $key)  use (&$generators)
-        {
-            if ($item instanceof \Generator) {
+        array_walk_recursive($structure, function (&$item, $key) use (&$generators) {
+            // generators should be used but for better DX all kind of Traversable are supported
+            if ($item instanceof \Traversable && !$item instanceof \JsonSerializable) {
                 // using uniqid to avoid conflict with eventually other data in the structure
-                $placeholder = \uniqid('__placeholder_', true);
+                $placeholder = uniqid('__placeholder_', true);
                 $generators[$placeholder] = $item;
 
                 $item = $placeholder;
             }
         });
 
-        $keys = array_keys($generators);
-
         $jsonEncodingOptions = \JSON_THROW_ON_ERROR | $this->getEncodingOptions();
         $structureText = json_encode($structure, $jsonEncodingOptions);
 
-        foreach ($keys as $key) {
-            [$start, $end] = explode('"'.$key.'"', $structureText, 2);
+        foreach (array_keys($generators) as $placeholder) {
+            // split structure json by placeholder for stream the before and between part of the generator items
+            [$start, $end] = explode('"'.$placeholder.'"', $structureText, 2);
 
             // send first and between parts of the structure
             echo $start;
 
             $count = 0;
-            echo '[';
-            foreach ($generators[$key] as $array) {
-                if (0 !== $count) {
+            $startTag = '[';
+            foreach ($generators[$placeholder] as $key => $item) {
+                if (0 === $count) {
+                    // depending of the first elements key the generator is detected as a list or map
+                    // we can not check for a whole list or map because that would hurt the performance
+                    // of the streamed response which is the main goal of this response class
+                    if ($key !== 0) {
+                        $startTag = '{';
+                    }
+
+                    echo $startTag;
+                } else {
                     // if not first element of the generic a separator is required between the elements
                     echo ',';
                 }
 
-                echo json_encode($array, $jsonEncodingOptions);
+                if ($startTag === '{') {
+                    echo json_encode($key, $jsonEncodingOptions) . ':';
+                }
+
+                echo json_encode($item, $jsonEncodingOptions);
                 ++$count;
 
                 if (0 === $count % $this->flushSize) {
                     flush();
                 }
             }
-            echo ']';
+
+            echo ($startTag === '[' ? ']' : '}');
 
             $structureText = $end;
         }
 
-        echo $structureText; // send the after part of the structure as last
+        echo $structureText; // send the after part of the structure json as last
     }
 
     /**
