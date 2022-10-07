@@ -9,7 +9,7 @@ use App\Controller\ArticleListSymfonyAction;
 use App\Doctrine\EntityManagerFactory;
 use Symfony\Component\HttpFoundation\Response;
 
-function bytes($bytes, $force_unit = NULL, $format = NULL, $si = TRUE)
+function bytes($bytes, $force_unit = '', $format = NULL, $si = TRUE)
 {
     // Format string
     $format = ($format === NULL) ? '%01.2f %s' : (string) $format;
