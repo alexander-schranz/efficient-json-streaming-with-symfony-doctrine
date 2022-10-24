@@ -26,6 +26,14 @@ class ArticleListSymfonyAction
             ->addSelect('article.title')
             ->addSelect('article.description');
 
-        return $queryBuilder->getQuery()->toIterable();
+        $count = 0;
+        foreach ($queryBuilder->getQuery()->toIterable()  as $key => $value) {
+            yield $key => $value;
+
+            ++$count;
+            if ($count % 500 === 0 && $count !== 100_000) { // flush response after every 500
+                flush();
+            }
+        }
     }
 }
