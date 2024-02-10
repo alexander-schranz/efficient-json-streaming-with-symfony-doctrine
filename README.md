@@ -1,3 +1,19 @@
+# TLDR;
+
+This journey did begin with the blog post below. Today I'm happy that the blog
+post ended up with a contribution to Symfony Framework from my side with the great 
+feedback we evolved the solution a lot better then I could think about it.
+
+So I'm happy that the `StreamedJsonResponse` is now part of the `symfony/http-foundation` package since 6.3:
+
+ - [https://symfony.com/doc/6.4/components/http_foundation.html#streaming-a-json-response](https://symfony.com/doc/6.4/components/http_foundation.html#streaming-a-json-response)
+
+Thank to [pelmered](https://github.com/pelmered) it will also will be part of the Laravel Framework:
+
+ - [https://github.com/laravel/framework/pull/49873](https://github.com/laravel/framework/pull/49873)
+
+------
+
 # Efficient JSON Streaming with Symfony and Doctrine
 
 After reading a tweet about we provide only a few items (max. 100) over our
@@ -316,3 +332,9 @@ try to contribute this implementation to the Symfony core.
 ## Update 2022-10-02
 
 Updated some statistics with new machine and apache benchmark tests for concurrency requests.
+
+## Update 202402-10
+
+Laravel is adopting the implementation and using the `StreamedJsonResponse` for there new `streamJson` method,
+thx to [pelmered](https://github.com/pelmered):
+[https://github.com/laravel/framework/pull/49873](https://github.com/laravel/framework/pull/49873).
